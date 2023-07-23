@@ -217,7 +217,7 @@ DEP_CPP_WSAWR=\
 	".\WSAWrapper.h"\
 	
 NODEP_CPP_WSAWR=\
-	".\..\..\..\..\..\r\n[WSAWrapper] Reading data from %s"\
+	".\BUFFER_LENGTH"\
 	
 
 "$(INTDIR)\WSAWrapper.obj" : $(SOURCE) $(DEP_CPP_WSAWR) "$(INTDIR)"

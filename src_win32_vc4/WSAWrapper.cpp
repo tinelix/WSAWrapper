@@ -25,7 +25,7 @@ int BUFFER_LENGTH = 4096;
 char* recv_buff;
 struct hostent *hostent;
 struct sockaddr_in addr;
-LPSTR address;
+char* g_address;
 char debug_str[400];
 BOOL is_win32s;
 
@@ -105,6 +105,7 @@ EXPORT int CALLBACK GetWSAError() {
 }
 
 EXPORT BOOL CALLBACK CreateConnection(char* address, int port) {
+	g_address = address;
 	if(INVALID_SOCKET == (s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP))) {
 		if(!is_win32s) {
 			sprintf(debug_str, "\r\n[WSAWrapper] Connection failed / Error code: %d", WSAGetLastError());
@@ -150,7 +151,7 @@ EXPORT BOOL CALLBACK CreateConnection(char* address, int port) {
 
 EXPORT BOOL CALLBACK SendData(char* buff) {
 	if(!is_win32s) {
-		sprintf(debug_str, "\r\n[WSAWrapper] Sending data to %s...", address);
+		sprintf(debug_str, "\r\n[WSAWrapper] Sending data to %s...", g_address);
 		OutputDebugString(debug_str);
 	}
 	if(SOCKET_ERROR == (send(s, buff, 512, 0))) {
@@ -170,17 +171,21 @@ EXPORT BOOL CALLBACK SendData(char* buff) {
 
 EXPORT char* CALLBACK GetInputBuffer() {
 	int length = 0;
+	if(recv_buff == NULL) {
+		recv_buff = new char[BUFFER_LENGTH];
+	}
 	if(SOCKET_ERROR == (length = recv(s, (char*)recv_buff, BUFFER_LENGTH, 0))) {
 		if(!is_win32s) {
-			sprintf(debug_str, "\r\n[WSAWrapper] Connection with %s closed.", address);
+			sprintf(debug_str, "\r\n[WSAWrapper] Connection with %s closed.", g_address);
 			OutputDebugString(debug_str);
 		}
 		strcpy(recv_buff, "\r\n[Connection closed]");
 	} else {
 		if(!is_win32s) {
-			sprintf(debug_str, "\r\n[WSAWrapper] Reading data from %s... (%d bytes)", address, length);
+			sprintf(debug_str, "\r\n[WSAWrapper] Reading data from %s... (%d bytes)", g_address, length);
 			OutputDebugString(debug_str);
 		}
+		recv_buff[length] = '\0';
 	}
 	if(!is_win32s) {
 		sprintf(debug_str, "\r\n[WSAWrapper] Successfully read!");
