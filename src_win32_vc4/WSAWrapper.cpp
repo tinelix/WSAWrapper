@@ -180,7 +180,7 @@ EXPORT BOOL CALLBACK SendData(char* buff) {
 		sprintf(debug_str, "\r\n[WSAWrapper] Sending data to %s...", g_address);
 		OutputDebugString(debug_str);
 	}
-	if(SOCKET_ERROR == (send(s, buff, 512, 0))) {
+	if(SOCKET_ERROR == (send(s, buff, strlen(buff), 0))) {
 		if(!is_win32s) {
 			sprintf(debug_str, "\r\n[WSAWrapper] Sending failed / Error code: %d", WSAGetLastError());
 			OutputDebugString(debug_str);
