@@ -74,8 +74,8 @@ EXPORT BOOL CALLBACK InitializeWinSock() {
 	return TRUE;
 }
 
-EXPORT BOOL CALLBACK EnableAsyncMessages(HWND hWnd) {
-	int WSAAsync = WSAAsyncSelect(s, hWnd, 0xAFFF, FD_READ|FD_CLOSE);
+EXPORT BOOL CALLBACK EnableCustomAsyncMessages(HWND hWnd, int message, int nStatus) {
+	int WSAAsync = WSAAsyncSelect(s, hWnd, 0xAFFF, nStatus);
 	if(hWnd != NULL) {
 		if(WSAAsync > 0) {
 			if(!is_win32s) {
@@ -84,6 +84,32 @@ EXPORT BOOL CALLBACK EnableAsyncMessages(HWND hWnd) {
 				OutputDebugString(debug_str);
 			}
 			return FALSE;
+		}
+		if(!is_win32s) {
+			sprintf(debug_str, "\r\n[WSAWrapper] Async Messages initialized.");
+			OutputDebugString(debug_str);
+		}
+		return TRUE;
+	} else {
+		if(!is_win32s) {
+			sprintf(debug_str, "\r\n[WSAWrapper] Async Messages initialization "
+				"failed / hWnd is NULL");
+			OutputDebugString(debug_str);
+		}
+		return FALSE;
+	}
+}
+
+EXPORT BOOL CALLBACK EnableAsyncMessages(HWND hWnd) {
+	int WSAAsync = WSAAsyncSelect(s, hWnd, 0xAFFF, FD_READ);
+	if(hWnd != NULL) {
+		if(WSAAsync > 0) {
+			if(!is_win32s) {
+				sprintf(debug_str, "\r\n[WSAWrapper] Async Messages initialization "
+					"failed / Error code: %d", WSAGetLastError());
+				OutputDebugString(debug_str);
+			}
+			return EnableCustomAsyncMessages(hWnd, 0xE0001, FD_CLOSE);
 		}
 		if(!is_win32s) {
 			sprintf(debug_str, "\r\n[WSAWrapper] Async Messages initialized.");

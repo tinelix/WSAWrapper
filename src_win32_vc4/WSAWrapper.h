@@ -16,6 +16,7 @@
 #define EXPORT extern "C" __declspec (dllexport)
 
 EXPORT BOOL CALLBACK InitializeWinSock();
+EXPORT BOOL CALLBACK EnableCustomAsyncMessages(HWND hWnd, int message, int nStatus);
 EXPORT BOOL CALLBACK EnableAsyncMessages(HWND hWnd);
 EXPORT int CALLBACK GetWSAError();
 EXPORT BOOL CALLBACK CreateConnection(char* address, int port);
