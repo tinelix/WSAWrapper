@@ -26,8 +26,17 @@ struct hostent *hostent;
 struct sockaddr_in addr;
 
 int WINAPI DllMain(HINSTANCE hInst, DWORD fdReas, PVOID pvRes) {
-	OutputDebugString("\r\nWinsock Wrapper"
-		"\r\nCopyright © 2023 Dmitry Tretyakov (aka. Tinelix). Licensed under LGPLv2.1");
+	switch(fdReas) {
+		case DLL_PROCESS_ATTACH:
+			OutputDebugString("\r\nWinsock Wrapper"
+			"\r\nCopyright © 2023 Dmitry Tretyakov (aka. Tinelix). Licensed under LGPLv2.1"
+			"\r\n");
+			break;
+		case DLL_PROCESS_DETACH:
+			OutputDebugString("\r\nWinsock Wrapper is shutting down...\r\n");
+			break;
+	}
+	
 	return TRUE;
 }
 
