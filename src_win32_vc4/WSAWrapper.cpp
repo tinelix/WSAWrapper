@@ -76,15 +76,28 @@ EXPORT BOOL CALLBACK InitializeWinSock() {
 
 EXPORT BOOL CALLBACK EnableAsyncMessages(HWND hWnd) {
 	int WSAAsync = WSAAsyncSelect(s, hWnd, 0xAFFF, FD_READ|FD_CLOSE);
-	if(WSAAsync > 0) {
+	if(hWnd != NULL) {
+		if(WSAAsync > 0) {
+			if(!is_win32s) {
+				sprintf(debug_str, "\r\n[WSAWrapper] Async Messages initialization "
+					"failed / Error code: %d", WSAGetLastError());
+				OutputDebugString(debug_str);
+			}
+			return FALSE;
+		}
+		if(!is_win32s) {
+			sprintf(debug_str, "\r\n[WSAWrapper] Async Messages initialized.");
+			OutputDebugString(debug_str);
+		}
+		return TRUE;
+	} else {
 		if(!is_win32s) {
 			sprintf(debug_str, "\r\n[WSAWrapper] Async Messages initialization "
-				"failed / Error code: %d", WSAGetLastError());
+				"failed / hWnd is NULL");
 			OutputDebugString(debug_str);
 		}
 		return FALSE;
 	}
-	return TRUE;
 }
 
 EXPORT int CALLBACK GetWSAError() {
