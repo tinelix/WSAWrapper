@@ -177,10 +177,14 @@ EXPORT char* CALLBACK GetInputBuffer() {
 }
 
 EXPORT void CloseConnection() {
-	closesocket(s);
-	if(!is_win32s) {
-		sprintf(debug_str, "\r\n[WSAWrapper] Successfully closed!");
-		OutputDebugString(debug_str);
+	try {
+		closesocket(s);
+		if(!is_win32s) {
+			sprintf(debug_str, "\r\n[WSAWrapper] Successfully closed!");
+			OutputDebugString(debug_str);
+		}
+	} catch(...) {
+
 	}
 }
 
