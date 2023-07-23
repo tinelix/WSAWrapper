@@ -46,6 +46,8 @@ int WINAPI DllMain(HINSTANCE hInst, DWORD fdReas, PVOID pvRes) {
 			InitializeWinSock();
 			break;
 		case DLL_PROCESS_DETACH:
+			CloseConnection();
+			WSACleanup();
 			if(!is_win32s) {
 				OutputDebugString("\r\nWinsock Wrapper is shutting down...\r\n");
 			}
