@@ -213,7 +213,7 @@ DEP_CPP_WSAWR=\
 	".\WSAWrapper.h"\
 	
 NODEP_CPP_WSAWR=\
-	".\EXPORT SOCKET CALLBACK CreateConnection(LPSTR address, int port)"\
+	"..\..\..\..\..\r\n[WSAWrapper] Reading data from %s"\
 	
 
 "$(INTDIR)\WSAWrapper.obj" : $(SOURCE) $(DEP_CPP_WSAWR) "$(INTDIR)"
