@@ -89,7 +89,7 @@ EXPORT int CALLBACK GetWSAError() {
 	return WSAGetLastError();
 }
 
-EXPORT BOOL CALLBACK CreateConnection(LPSTR address, int port) {
+EXPORT BOOL CALLBACK CreateConnection(char* address, int port) {
 	if(INVALID_SOCKET == (s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP))) {
 		if(!is_win32s) {
 			sprintf(debug_str, "\r\n[WSAWrapper] Connection failed / Error code: %d", WSAGetLastError());
@@ -98,8 +98,22 @@ EXPORT BOOL CALLBACK CreateConnection(LPSTR address, int port) {
 		return FALSE;
 	}
 	ZeroMemory(&addr, sizeof(addr));
+	if(!is_win32s) {
+		sprintf(debug_str, "\r\n[WSAWrapper] Searching IP of %s:%d...", address, port);
+		OutputDebugString(debug_str);
+	}
+	hostent = gethostbyname(address);
 	addr.sin_family = AF_INET;
-	addr.sin_addr.S_un.S_addr = inet_addr(address);
+	if(hostent) {
+		addr.sin_addr.S_un.S_addr = 
+			inet_addr((char*)inet_ntoa(**(in_addr**)hostent->h_addr_list));
+	} else {
+		if(!is_win32s) {
+			sprintf(debug_str, "\r\n[WSAWrapper] Connection failed / Error code: %d", WSAGetLastError());
+			OutputDebugString(debug_str);
+		}
+		return FALSE;
+	}
 	addr.sin_port = htons(port);
 	if(!is_win32s) {
 		sprintf(debug_str, "\r\n[WSAWrapper] Connecting to %s:%d", address, port);

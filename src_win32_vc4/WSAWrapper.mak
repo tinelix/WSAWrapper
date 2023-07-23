@@ -86,8 +86,10 @@ LINK32=link.exe
 LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
  advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib\
  odbccp32.lib /nologo /subsystem:windows /dll /incremental:no\
- /pdb:"$(OUTDIR)/wsawrap.pdb" /machine:I386 /out:"$(OUTDIR)/wsawrap.dll"\
- /implib:"$(OUTDIR)/wsawrap.lib" 
+ /pdb:"$(OUTDIR)/wsawrap.pdb" /machine:I386 /def:".\WSAWrapper.def"\
+ /out:"$(OUTDIR)/wsawrap.dll" /implib:"$(OUTDIR)/wsawrap.lib" 
+DEF_FILE= \
+	".\WSAWrapper.def"
 LINK32_OBJS= \
 	"$(INTDIR)/WSAWrapper.obj"
 
@@ -148,8 +150,10 @@ LINK32=link.exe
 LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
  advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib\
  odbccp32.lib /nologo /subsystem:windows /dll /incremental:yes\
- /pdb:"$(OUTDIR)/wsawrap.pdb" /debug /machine:I386 /out:"$(OUTDIR)/wsawrap.dll"\
- /implib:"$(OUTDIR)/wsawrap.lib" 
+ /pdb:"$(OUTDIR)/wsawrap.pdb" /debug /machine:I386 /def:".\WSAWrapper.def"\
+ /out:"$(OUTDIR)/wsawrap.dll" /implib:"$(OUTDIR)/wsawrap.lib" 
+DEF_FILE= \
+	".\WSAWrapper.def"
 LINK32_OBJS= \
 	"$(INTDIR)/WSAWrapper.obj"
 
@@ -213,7 +217,7 @@ DEP_CPP_WSAWR=\
 	".\WSAWrapper.h"\
 	
 NODEP_CPP_WSAWR=\
-	"..\..\..\..\..\r\n[WSAWrapper] Reading data from %s"\
+	".\..\..\..\..\..\r\n[WSAWrapper] Reading data from %s"\
 	
 
 "$(INTDIR)\WSAWrapper.obj" : $(SOURCE) $(DEP_CPP_WSAWR) "$(INTDIR)"
@@ -227,6 +231,18 @@ DEP_CPP_WSAWR=\
 
 "$(INTDIR)\WSAWrapper.obj" : $(SOURCE) $(DEP_CPP_WSAWR) "$(INTDIR)"
 
+
+!ENDIF 
+
+# End Source File
+################################################################################
+# Begin Source File
+
+SOURCE=.\WSAWrapper.def
+
+!IF  "$(CFG)" == "WSAWrapper - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "WSAWrapper - Win32 Debug"
 
 !ENDIF 
 

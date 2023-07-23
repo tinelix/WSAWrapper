@@ -1,0 +1,11 @@
+LIBRARY					"WSAWrapper"
+DESCRIPTION				"Winsock Wrapper"
+
+EXPORTS
+EnableAsyncMessages		@15
+GetWSAError				@16
+CreateConnection		@17
+SendData				@18
+GetInputBuffer			@19
+CloseConnection			@20
+
