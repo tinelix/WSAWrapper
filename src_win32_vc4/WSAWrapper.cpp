@@ -91,6 +91,10 @@ EXPORT int CALLBACK GetWSAError() {
 
 EXPORT SOCKET CALLBACK CreateConnection(LPSTR address, int port) {
 	if(INVALID_SOCKET == (s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP))) {
+		if(!is_win32s) {
+			sprintf(debug_str, "\r\n[WSAWrapper] Connection failed / Error code: %d", WSAGetLastError());
+			OutputDebugString(debug_str);
+		}
 		return NULL;
 	}
 	ZeroMemory(&addr, sizeof(addr));
