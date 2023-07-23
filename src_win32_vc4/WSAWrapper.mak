@@ -33,6 +33,7 @@ NULL=nul
 !ENDIF 
 ################################################################################
 # Begin Project
+# PROP Target_Last_Scanned "WSAWrapper - Win32 Debug"
 MTL=mktyplib.exe
 CPP=cl.exe
 RSC=rc.exe
@@ -52,13 +53,13 @@ RSC=rc.exe
 OUTDIR=.\Release
 INTDIR=.\Release
 
-ALL : "$(OUTDIR)\WSAWrapper.dll"
+ALL : "$(OUTDIR)\wsawrap.dll"
 
 CLEAN : 
-	-@erase ".\Release\WSAWrapper.dll"
+	-@erase ".\Release\wsawrap.dll"
 	-@erase ".\Release\WSAWrapper.obj"
-	-@erase ".\Release\WSAWrapper.lib"
-	-@erase ".\Release\WSAWrapper.exp"
+	-@erase ".\Release\wsawrap.lib"
+	-@erase ".\Release\wsawrap.exp"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -81,16 +82,16 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)/WSAWrapper.bsc"
 BSC32_SBRS=
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /machine:I386
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /machine:I386 /out:"Release/wsawrap.dll"
 LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
  advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib\
  odbccp32.lib /nologo /subsystem:windows /dll /incremental:no\
- /pdb:"$(OUTDIR)/WSAWrapper.pdb" /machine:I386 /out:"$(OUTDIR)/WSAWrapper.dll"\
- /implib:"$(OUTDIR)/WSAWrapper.lib" 
+ /pdb:"$(OUTDIR)/wsawrap.pdb" /machine:I386 /out:"$(OUTDIR)/wsawrap.dll"\
+ /implib:"$(OUTDIR)/wsawrap.lib" 
 LINK32_OBJS= \
 	"$(INTDIR)/WSAWrapper.obj"
 
-"$(OUTDIR)\WSAWrapper.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+"$(OUTDIR)\wsawrap.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
@@ -110,17 +111,17 @@ LINK32_OBJS= \
 OUTDIR=.\Debug
 INTDIR=.\Debug
 
-ALL : "$(OUTDIR)\WSAWrapper.dll"
+ALL : "$(OUTDIR)\wsawrap.dll"
 
 CLEAN : 
-	-@erase ".\Debug\WSAWrapper.dll"
-	-@erase ".\Debug\WSAWrapper.obj"
-	-@erase ".\Debug\WSAWrapper.ilk"
-	-@erase ".\Debug\WSAWrapper.lib"
-	-@erase ".\Debug\WSAWrapper.exp"
-	-@erase ".\Debug\WSAWrapper.pdb"
 	-@erase ".\Debug\vc40.pdb"
 	-@erase ".\Debug\vc40.idb"
+	-@erase ".\Debug\wsawrap.dll"
+	-@erase ".\Debug\WSAWrapper.obj"
+	-@erase ".\Debug\wsawrap.ilk"
+	-@erase ".\Debug\wsawrap.lib"
+	-@erase ".\Debug\wsawrap.exp"
+	-@erase ".\Debug\wsawrap.pdb"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -143,16 +144,16 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)/WSAWrapper.bsc"
 BSC32_SBRS=
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:I386
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:I386 /out:"Debug/wsawrap.dll"
 LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
  advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib\
  odbccp32.lib /nologo /subsystem:windows /dll /incremental:yes\
- /pdb:"$(OUTDIR)/WSAWrapper.pdb" /debug /machine:I386\
- /out:"$(OUTDIR)/WSAWrapper.dll" /implib:"$(OUTDIR)/WSAWrapper.lib" 
+ /pdb:"$(OUTDIR)/wsawrap.pdb" /debug /machine:I386 /out:"$(OUTDIR)/wsawrap.dll"\
+ /implib:"$(OUTDIR)/wsawrap.lib" 
 LINK32_OBJS= \
 	"$(INTDIR)/WSAWrapper.obj"
 
-"$(OUTDIR)\WSAWrapper.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+"$(OUTDIR)\wsawrap.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
