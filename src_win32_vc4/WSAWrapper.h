@@ -18,7 +18,7 @@
 EXPORT BOOL CALLBACK InitializeWinSock();
 EXPORT BOOL CALLBACK EnableAsyncMessages(HWND hWnd);
 EXPORT int CALLBACK GetWSAError();
-EXPORT SOCKET CALLBACK CreateConnection(LPSTR address, int port);
+EXPORT BOOL CALLBACK CreateConnection(LPSTR address, int port);
 EXPORT BOOL CALLBACK SendData(char* buff);
 EXPORT char* CALLBACK GetInputBuffer();
 EXPORT void CloseConnection();

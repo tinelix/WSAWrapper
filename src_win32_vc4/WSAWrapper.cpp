@@ -89,13 +89,13 @@ EXPORT int CALLBACK GetWSAError() {
 	return WSAGetLastError();
 }
 
-EXPORT SOCKET CALLBACK CreateConnection(LPSTR address, int port) {
+EXPORT BOOL CALLBACK CreateConnection(LPSTR address, int port) {
 	if(INVALID_SOCKET == (s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP))) {
 		if(!is_win32s) {
 			sprintf(debug_str, "\r\n[WSAWrapper] Connection failed / Error code: %d", WSAGetLastError());
 			OutputDebugString(debug_str);
 		}
-		return NULL;
+		return FALSE;
 	}
 	ZeroMemory(&addr, sizeof(addr));
 	addr.sin_family = AF_INET;
@@ -110,13 +110,13 @@ EXPORT SOCKET CALLBACK CreateConnection(LPSTR address, int port) {
 			sprintf(debug_str, "\r\n[WSAWrapper] Connection failed / Error code: %d", WSAGetLastError());
 			OutputDebugString(debug_str);
 		}
-		return NULL;
+		return FALSE;
 	}
 	if(!is_win32s) {
 		sprintf(debug_str, "\r\n[WSAWrapper] Successfully connected!");
 		OutputDebugString(debug_str);
 	}
-	return s;
+	return TRUE;
 }
 
 EXPORT BOOL CALLBACK SendData(char* buff) {
