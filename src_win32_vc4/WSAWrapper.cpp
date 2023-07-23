@@ -27,17 +27,28 @@ struct hostent *hostent;
 struct sockaddr_in addr;
 LPSTR address;
 char debug_str[400];
+BOOL is_win32s;
 
 int WINAPI DllMain(HINSTANCE hInst, DWORD fdReas, PVOID pvRes) {
 	switch(fdReas) {
 		case DLL_PROCESS_ATTACH:
-			OutputDebugString("\r\nWinsock Wrapper - Win32 DLL"
-			"\r\nCopyright © 2023 Dmitry Tretyakov (aka. Tinelix). Licensed under LGPLv2.1."
-			"\r\nSource code: https://github.com/tinelix/WSAWrapper\r\n");
+			// Checking if it's Win32s
+			if(GetVersion() & 0x80000000 && (GetVersion() & 0xFF) == 3) {
+				is_win32s = TRUE;
+			} else {
+				is_win32s = FALSE;
+			}
+			if(!is_win32s) {
+				OutputDebugString("\r\nWinsock Wrapper - Win32 DLL"
+				"\r\nCopyright © 2023 Dmitry Tretyakov (aka. Tinelix). Licensed under LGPLv2.1."
+				"\r\nSource code: https://github.com/tinelix/WSAWrapper\r\n");
+			}
 			InitializeWinSock();
 			break;
 		case DLL_PROCESS_DETACH:
-			OutputDebugString("\r\nWinsock Wrapper is shutting down...\r\n");
+			if(!is_win32s) {
+				OutputDebugString("\r\nWinsock Wrapper is shutting down...\r\n");
+			}
 			break;
 	}
 	
@@ -47,22 +58,28 @@ int WINAPI DllMain(HINSTANCE hInst, DWORD fdReas, PVOID pvRes) {
 EXPORT BOOL CALLBACK InitializeWinSock() {
 	WSADATA wsadata;
 	if(FAILED(WSAStartup(MAKEWORD(1,1), &wsadata))) {
-		sprintf(debug_str, "\r\n[WSAWrapper] Winsock initialization "
-			"failed / Error code: %d", WSAGetLastError());
-		OutputDebugString(debug_str);
+		if(!is_win32s) {
+			sprintf(debug_str, "\r\n[WSAWrapper] Winsock initialization "
+				"failed / Error code: %d", WSAGetLastError());
+			OutputDebugString(debug_str);
+		}
 		return FALSE;
 	}
-	sprintf(debug_str, "\r\n[WSAWrapper] Winsock 1.1+ initialized.");
+	if(!is_win32s) {
+		sprintf(debug_str, "\r\n[WSAWrapper] Winsock 1.1+ initialized.");
 		OutputDebugString(debug_str);
+	}
 	return TRUE;
 }
 
 EXPORT BOOL CALLBACK EnableAsyncMessages(HWND hWnd) {
 	int WSAAsync = WSAAsyncSelect(s, hWnd, 0xAFFF, FD_READ|FD_CLOSE);
 	if(WSAAsync > 0) {
-		sprintf(debug_str, "\r\n[WSAWrapper] Async Messages initialization "
-			"failed / Error code: %d", WSAGetLastError());
-		OutputDebugString(debug_str);
+		if(!is_win32s) {
+			sprintf(debug_str, "\r\n[WSAWrapper] Async Messages initialization "
+				"failed / Error code: %d", WSAGetLastError());
+			OutputDebugString(debug_str);
+		}
 		return FALSE;
 	}
 	return TRUE;
@@ -80,28 +97,40 @@ EXPORT SOCKET CALLBACK CreateConnection(LPSTR address, int port) {
 	addr.sin_family = AF_INET;
 	addr.sin_addr.S_un.S_addr = inet_addr(address);
 	addr.sin_port = htons(port);
-	sprintf(debug_str, "\r\n[WSAWrapper] Connecting to %s:%d", address, port);
-	OutputDebugString(debug_str);
-	if(SOCKET_ERROR == (connect(s, (sockaddr*)&addr, sizeof(addr)))) {
-		sprintf(debug_str, "\r\n[WSAWrapper] Connection failed / Error code: %d", WSAGetLastError());
+	if(!is_win32s) {
+		sprintf(debug_str, "\r\n[WSAWrapper] Connecting to %s:%d", address, port);
 		OutputDebugString(debug_str);
+	}
+	if(SOCKET_ERROR == (connect(s, (sockaddr*)&addr, sizeof(addr)))) {
+		if(!is_win32s) {
+			sprintf(debug_str, "\r\n[WSAWrapper] Connection failed / Error code: %d", WSAGetLastError());
+			OutputDebugString(debug_str);
+		}
 		return NULL;
 	}
-	sprintf(debug_str, "\r\n[WSAWrapper] Successfully connected!");
-	OutputDebugString(debug_str);
+	if(!is_win32s) {
+		sprintf(debug_str, "\r\n[WSAWrapper] Successfully connected!");
+		OutputDebugString(debug_str);
+	}
 	return s;
 }
 
 EXPORT BOOL CALLBACK SendData(char* buff) {
-	sprintf(debug_str, "\r\n[WSAWrapper] Sending data to %s...", address);
-	OutputDebugString(debug_str);
-	if(SOCKET_ERROR == (send(s, buff, 512, 0))) {
-		sprintf(debug_str, "\r\n[WSAWrapper] Sending failed / Error code: %d", WSAGetLastError());
+	if(!is_win32s) {
+		sprintf(debug_str, "\r\n[WSAWrapper] Sending data to %s...", address);
 		OutputDebugString(debug_str);
+	}
+	if(SOCKET_ERROR == (send(s, buff, 512, 0))) {
+		if(!is_win32s) {
+			sprintf(debug_str, "\r\n[WSAWrapper] Sending failed / Error code: %d", WSAGetLastError());
+			OutputDebugString(debug_str);
+		}
 		return FALSE;
 	}
-	sprintf(debug_str, "\r\n[WSAWrapper] Successfully sent!");
-	OutputDebugString(debug_str);
+	if(!is_win32s) {
+		sprintf(debug_str, "\r\n[WSAWrapper] Successfully sent!");
+		OutputDebugString(debug_str);
+	}
 	return TRUE;
 }
 
@@ -109,22 +138,30 @@ EXPORT BOOL CALLBACK SendData(char* buff) {
 EXPORT char* CALLBACK GetInputBuffer() {
 	int length = 0;
 	if(SOCKET_ERROR == (length = recv(s, (char*)recv_buff, BUFFER_LENGTH, 0))) {
-		sprintf(debug_str, "\r\n[WSAWrapper] Connection with %s closed.", address);
-		OutputDebugString(debug_str);
+		if(!is_win32s) {
+			sprintf(debug_str, "\r\n[WSAWrapper] Connection with %s closed.", address);
+			OutputDebugString(debug_str);
+		}
 		strcpy(recv_buff, "\r\n[Connection closed]");
 	} else {
-		sprintf(debug_str, "\r\n[WSAWrapper] Reading data from %s... (%d bytes)", address, length);
+		if(!is_win32s) {
+			sprintf(debug_str, "\r\n[WSAWrapper] Reading data from %s... (%d bytes)", address, length);
+			OutputDebugString(debug_str);
+		}
+	}
+	if(!is_win32s) {
+		sprintf(debug_str, "\r\n[WSAWrapper] Successfully read!");
 		OutputDebugString(debug_str);
 	}
-	sprintf(debug_str, "\r\n[WSAWrapper] Successfully read!");
-	OutputDebugString(debug_str);
 	return recv_buff;
 }
 
 EXPORT void CloseConnection() {
 	closesocket(s);
-	sprintf(debug_str, "\r\n[WSAWrapper] Successfully closed!");
-	OutputDebugString(debug_str);
+	if(!is_win32s) {
+		sprintf(debug_str, "\r\n[WSAWrapper] Successfully closed!");
+		OutputDebugString(debug_str);
+	}
 }
 
 
