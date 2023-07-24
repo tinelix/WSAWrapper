@@ -197,13 +197,13 @@ EXPORT BOOL CALLBACK SendData(char* buff) {
 
 EXPORT char* CALLBACK GetInputBuffer() {
 	int length = 0;
-	if(recv_buff == NULL) {
-		recv_buff = new char[BUFFER_LENGTH];
-	}
-	if(SOCKET_ERROR == (length = recv(s, (char*)recv_buff, BUFFER_LENGTH, 0)) && length == 0) {
+	length = recv(s, (char*)recv_buff, BUFFER_LENGTH, 0);
+	recv_buff = new char[BUFFER_LENGTH];
+	if(SOCKET_ERROR == length) {
 		if(!is_win32s) {
 			sprintf(debug_str, "\r\n[WSAWrapper] Connection with %s closed.", g_address);
 			OutputDebugString(debug_str);
+			closesocket(s);
 		}
 		sprintf(recv_buff, "[WSAWrapper] 0xE0001\r\n");
 	} else {
