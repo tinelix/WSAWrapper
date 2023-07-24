@@ -205,7 +205,7 @@ EXPORT char* CALLBACK GetInputBuffer() {
 			sprintf(debug_str, "\r\n[WSAWrapper] Connection with %s closed.", g_address);
 			OutputDebugString(debug_str);
 		}
-		sprintf(recv_buff, "[WSAWrapper] 0xE001");
+		sprintf(recv_buff, "[WSAWrapper] 0xE0001");
 	} else {
 		if(!is_win32s) {
 			sprintf(debug_str, "\r\n[WSAWrapper] Reading data from %s... (%d bytes)", g_address, length);
