@@ -15,6 +15,13 @@
 
 #define EXPORT extern "C" __declspec (dllexport)
 
+struct NetworkStatistics {
+	int packets_read;
+	int packets_sent;
+	int total_send_bytes;
+	int total_read_bytes;
+} NetworkStats;
+
 EXPORT BOOL CALLBACK InitializeWinSock();
 EXPORT BOOL CALLBACK EnableCustomAsyncMessages(HWND hWnd, int message, int nStatus);
 EXPORT BOOL CALLBACK EnableAsyncMessages(HWND hWnd);
@@ -23,4 +30,5 @@ EXPORT BOOL CALLBACK CreateConnection(char* address, int port);
 EXPORT int CALLBACK CreateAsyncConnection(char* address, int port, int part, int message, HWND hWnd);
 EXPORT BOOL CALLBACK SendData(char* buff);
 EXPORT char* CALLBACK GetInputBuffer();
+EXPORT struct NetworkStatistics GetNetworkStatistics();
 EXPORT void CloseConnection();

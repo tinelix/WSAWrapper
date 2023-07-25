@@ -8,5 +8,6 @@ CreateConnection		@17
 CreateAsyncConnection	@18
 SendData				@19
 GetInputBuffer			@20
-CloseConnection			@21
+GetNetworkStatistics	@21
+CloseConnection			@22
 

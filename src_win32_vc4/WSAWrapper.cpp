@@ -32,6 +32,8 @@ char debug_str[400];
 char ip_addr[40];
 BOOL is_win32s;
 
+struct NetworkStatistics stats;
+
 int WINAPI DllMain(HINSTANCE hInst, DWORD fdReas, PVOID pvRes) {
 	switch(fdReas) {
 		case DLL_PROCESS_ATTACH:
@@ -41,6 +43,9 @@ int WINAPI DllMain(HINSTANCE hInst, DWORD fdReas, PVOID pvRes) {
 			} else {
 				is_win32s = FALSE;
 			}
+			
+			
+
 			if(!is_win32s) {
 				OutputDebugString("\r\nWinsock Wrapper - Win32 DLL"
 				"\r\nCopyright © 2023 Dmitry Tretyakov (aka. Tinelix). Licensed under LGPLv2.1."
@@ -246,12 +251,18 @@ EXPORT BOOL CALLBACK SendData(char* buff) {
 		sprintf(debug_str, "\r\n[WSAWrapper] Sending data to %s...", g_address);
 		OutputDebugString(debug_str);
 	}
-	if(SOCKET_ERROR == (send(s, buff, strlen(buff), 0))) {
+
+	int length = (send(s, buff, strlen(buff), 0));
+
+	if(SOCKET_ERROR == length) {
 		if(!is_win32s) {
 			sprintf(debug_str, "\r\n[WSAWrapper] Sending failed / Error code: %d", WSAGetLastError());
 			OutputDebugString(debug_str);
 		}
 		return FALSE;
+	} else {
+		stats.packets_sent = stats.packets_sent + 1;
+		stats.total_send_bytes += strlen(buff);
 	}
 	return TRUE;
 }
@@ -270,9 +281,15 @@ EXPORT char* CALLBACK GetInputBuffer() {
 		closesocket(s);
 		sprintf(recv_buff, "[WSAWrapper] 0xE0001\r\n");
 	} else {
+		stats.packets_read = stats.packets_read + 1;
+		stats.total_read_bytes += length;
 		recv_buff[length] = '\0';
 	}
 	return recv_buff;
+}
+
+EXPORT struct NetworkStatistics GetNetworkStatistics() {
+	return stats;
 }
 
 EXPORT void CloseConnection() {
