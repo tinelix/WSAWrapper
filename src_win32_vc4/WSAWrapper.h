@@ -20,6 +20,7 @@ EXPORT BOOL CALLBACK EnableCustomAsyncMessages(HWND hWnd, int message, int nStat
 EXPORT BOOL CALLBACK EnableAsyncMessages(HWND hWnd);
 EXPORT int CALLBACK GetWSAError();
 EXPORT BOOL CALLBACK CreateConnection(char* address, int port);
+EXPORT int CALLBACK CreateAsyncConnection(char* address, int port, int part, int message, HWND hWnd);
 EXPORT BOOL CALLBACK SendData(char* buff);
 EXPORT char* CALLBACK GetInputBuffer();
 EXPORT void CloseConnection();

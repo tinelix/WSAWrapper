@@ -5,7 +5,8 @@ EXPORTS
 EnableAsyncMessages		@15
 GetWSAError				@16
 CreateConnection		@17
-SendData				@18
-GetInputBuffer			@19
-CloseConnection			@20
+CreateAsyncConnection	@18
+SendData				@19
+GetInputBuffer			@20
+CloseConnection			@21
 
