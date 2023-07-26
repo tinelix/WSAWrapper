@@ -29,6 +29,6 @@ EXPORT int CALLBACK GetWSAError();
 EXPORT BOOL CALLBACK CreateConnection(char* address, int port);
 EXPORT int CALLBACK CreateAsyncConnection(char* address, int port, int part, int message, HWND hWnd);
 EXPORT BOOL CALLBACK SendData(char* buff);
-EXPORT char* CALLBACK GetInputBuffer();
+EXPORT char* CALLBACK GetInputBuffer(SOCKET s);
 EXPORT struct NetworkStatistics GetNetworkStatistics();
 EXPORT void CloseConnection();

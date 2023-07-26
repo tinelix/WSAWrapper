@@ -266,7 +266,7 @@ EXPORT BOOL CALLBACK SendData(char* buff) {
 		OutputDebugString(debug_str);
 	}
 
-	int length = (send(s, buff, strlen(buff), 0));
+	int length = send(s, buff, strlen(buff), 0);
 
 	if(SOCKET_ERROR == length) {
 		error_code = WSAGetLastError();
@@ -291,7 +291,7 @@ EXPORT BOOL CALLBACK SendData(char* buff) {
 }
 
 
-EXPORT char* CALLBACK GetInputBuffer() {
+EXPORT char* CALLBACK GetInputBuffer(SOCKET s) {
 	int length = 0;
 	recv_buff = new char[BUFFER_LENGTH];
 	length = recv(s, (char*)recv_buff, BUFFER_LENGTH, 0);
