@@ -34,9 +34,9 @@ NULL=nul
 ################################################################################
 # Begin Project
 # PROP Target_Last_Scanned "WSAWrapper - Win32 Debug"
-RSC=rc.exe
 MTL=mktyplib.exe
 CPP=cl.exe
+RSC=rc.exe
 
 !IF  "$(CFG)" == "WSAWrapper - Win32 Release"
 
@@ -217,7 +217,8 @@ DEP_CPP_WSAWR=\
 	".\WSAWrapper.h"\
 	
 NODEP_CPP_WSAWR=\
-	".\EXPORT"\
+	".\stats.packets_read"\
+	".\total_bytes_read"\
 	
 
 "$(INTDIR)\WSAWrapper.obj" : $(SOURCE) $(DEP_CPP_WSAWR) "$(INTDIR)"

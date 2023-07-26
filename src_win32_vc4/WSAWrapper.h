@@ -18,8 +18,8 @@
 struct NetworkStatistics {
 	int packets_read;
 	int packets_sent;
-	int total_send_bytes;
-	int total_read_bytes;
+	int total_bytes_sent;
+	int total_bytes_read;
 } NetworkStats;
 
 EXPORT BOOL CALLBACK InitializeWinSock();

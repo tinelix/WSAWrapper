@@ -148,6 +148,12 @@ EXPORT int CALLBACK GetWSAError() {
 }
 
 EXPORT BOOL CALLBACK CreateConnection(char* address, int port) {
+
+	stats.packets_read = 0;
+	stats.packets_sent = 0;
+	stats.total_bytes_read = 0;
+	stats.total_bytes_sent = 0;
+
 	g_address = address;
 	if(INVALID_SOCKET == (s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP))) {
 		if(!is_win32s) {
@@ -262,7 +268,7 @@ EXPORT BOOL CALLBACK SendData(char* buff) {
 		return FALSE;
 	} else {
 		stats.packets_sent = stats.packets_sent + 1;
-		stats.total_send_bytes += strlen(buff);
+		stats.total_bytes_sent += strlen(buff);
 	}
 	return TRUE;
 }
@@ -281,8 +287,8 @@ EXPORT char* CALLBACK GetInputBuffer() {
 		closesocket(s);
 		sprintf(recv_buff, "[WSAWrapper] 0xE0001\r\n");
 	} else {
-		stats.packets_read = stats.packets_read + 1;
-		stats.total_read_bytes += length;
+		stats.total_bytes_read += length;
+		stats.packets_read = stats.total_bytes_read / BUFFER_LENGTH;
 		recv_buff[length] = '\0';
 	}
 	return recv_buff;
