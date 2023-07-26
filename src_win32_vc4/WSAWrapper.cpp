@@ -44,8 +44,6 @@ int WINAPI DllMain(HINSTANCE hInst, DWORD fdReas, PVOID pvRes) {
 				is_win32s = FALSE;
 			}
 			
-			
-
 			if(!is_win32s) {
 				OutputDebugString("\r\nWinsock Wrapper - Win32 DLL"
 				"\r\nCopyright © 2023 Dmitry Tretyakov (aka. Tinelix). Licensed under LGPLv2.1."
