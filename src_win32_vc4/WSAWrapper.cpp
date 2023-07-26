@@ -31,12 +31,14 @@ int g_port;
 char debug_str[400];
 char ip_addr[40];
 BOOL is_win32s;
+int error_code = 0;
 
 struct NetworkStatistics stats;
 
 int WINAPI DllMain(HINSTANCE hInst, DWORD fdReas, PVOID pvRes) {
 	switch(fdReas) {
 		case DLL_PROCESS_ATTACH:
+			error_code = 0;
 			// Checking if it's Win32s
 			if(GetVersion() & 0x80000000 && (GetVersion() & 0xFF) == 3) {
 				is_win32s = TRUE;
@@ -85,9 +87,10 @@ EXPORT BOOL CALLBACK EnableCustomAsyncMessages(HWND hWnd, int message, int nStat
 		int WSAAsync = WSAAsyncSelect(s, hWnd, 0xAFFF, nStatus);
 		if(hWnd != NULL) {
 			if(WSAAsync > 0) {
+				error_code = WSAGetLastError();
 				if(!is_win32s) {
 					sprintf(debug_str, "\r\n[WSAWrapper] Async Messages initialization "
-						"failed / Error code: %d", WSAGetLastError());
+						"failed / Error code: %d", error_code);
 					OutputDebugString(debug_str);
 				}
 				return FALSE;
@@ -142,10 +145,11 @@ EXPORT BOOL CALLBACK EnableAsyncMessages(HWND hWnd) {
 }
 
 EXPORT int CALLBACK GetWSAError() {
-	return WSAGetLastError();
+	return error_code;
 }
 
 EXPORT BOOL CALLBACK CreateConnection(char* address, int port) {
+	error_code = 0;
 
 	stats.packets_read = 0;
 	stats.packets_sent = 0;
@@ -154,8 +158,9 @@ EXPORT BOOL CALLBACK CreateConnection(char* address, int port) {
 
 	g_address = address;
 	if(INVALID_SOCKET == (s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP))) {
+		error_code = WSAGetLastError();
 		if(!is_win32s) {
-			sprintf(debug_str, "\r\n[WSAWrapper] Connection failed / Error code: %d", WSAGetLastError());
+			sprintf(debug_str, "\r\n[WSAWrapper] Connection failed / Error code: %d", error_code);
 			OutputDebugString(debug_str);
 		}
 		return FALSE;
@@ -171,8 +176,9 @@ EXPORT BOOL CALLBACK CreateConnection(char* address, int port) {
 		addr.sin_addr.S_un.S_addr = 
 			inet_addr((char*)inet_ntoa(**(in_addr**)hostent->h_addr_list));
 	} else {
+		error_code = WSAGetLastError();
 		if(!is_win32s) {
-			sprintf(debug_str, "\r\n[WSAWrapper] Connection failed / Error code: %d", WSAGetLastError());
+			sprintf(debug_str, "\r\n[WSAWrapper] Connection failed / Error code: %d", error_code);
 			OutputDebugString(debug_str);
 		}
 		return FALSE;
@@ -183,8 +189,9 @@ EXPORT BOOL CALLBACK CreateConnection(char* address, int port) {
 		OutputDebugString(debug_str);
 	}
 	if(SOCKET_ERROR == (connect(s, (sockaddr*)&addr, sizeof(addr)))) {
+		error_code = WSAGetLastError();
 		if(!is_win32s) {
-			sprintf(debug_str, "\r\n[WSAWrapper] Connection failed / Error code: %d", WSAGetLastError());
+			sprintf(debug_str, "\r\n[WSAWrapper] Connection failed / Error code: %d", error_code);
 			OutputDebugString(debug_str);
 		}
 		return FALSE;
@@ -193,6 +200,7 @@ EXPORT BOOL CALLBACK CreateConnection(char* address, int port) {
 		sprintf(debug_str, "\r\n[WSAWrapper] Successfully connected!");
 		OutputDebugString(debug_str);
 	}
+	error_code = 0;
 	return TRUE;
 }
 
@@ -204,9 +212,10 @@ EXPORT int CALLBACK CreateAsyncConnection(
 		g_port = port;
 		PostMessage(hWnd, 0xAFFE, 0, 0);
 		if(INVALID_SOCKET == (s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP))) {
+			error_code = WSAGetLastError();
 			if(!is_win32s) {
 				sprintf(debug_str, "\r\n[WSAWrapper] Socket initialization failed / "
-					"Error code: %d", WSAGetLastError());
+					"Error code: %d", error_code);
 				OutputDebugString(debug_str);
 			}
 			return 0;
@@ -236,8 +245,9 @@ EXPORT int CALLBACK CreateAsyncConnection(
 			OutputDebugString(debug_str);
 		}
 		if(SOCKET_ERROR == (connect(s, (sockaddr*)&addr, sizeof(addr)))) {
+			error_code = WSAGetLastError();
 			if(!is_win32s) {
-				sprintf(debug_str, "\r\n[WSAWrapper] Connection failed / Error code: %d", WSAGetLastError());
+				sprintf(debug_str, "\r\n[WSAWrapper] Connection failed / Error code: %d", error_code);
 				OutputDebugString(debug_str);
 			}
 			return 0;
@@ -259,15 +269,24 @@ EXPORT BOOL CALLBACK SendData(char* buff) {
 	int length = (send(s, buff, strlen(buff), 0));
 
 	if(SOCKET_ERROR == length) {
-		if(!is_win32s) {
-			sprintf(debug_str, "\r\n[WSAWrapper] Sending failed / Error code: %d", WSAGetLastError());
-			OutputDebugString(debug_str);
+		error_code = WSAGetLastError();
+		if(error_code >= 0) {				// workaround: check error code
+			if(!is_win32s) {
+				sprintf(debug_str, "\r\n[WSAWrapper] Sending failed / Error code: %d", error_code);
+				OutputDebugString(debug_str);
+			}
+			return FALSE;
+		} else {
+			stats.packets_sent = stats.total_bytes_sent / BUFFER_LENGTH;
+			stats.total_bytes_sent += strlen(buff);
+			error_code = 0;
+			return TRUE;
 		}
-		return FALSE;
 	} else {
 		stats.packets_sent = stats.total_bytes_sent / BUFFER_LENGTH;
 		stats.total_bytes_sent += strlen(buff);
 	}
+	error_code = 0;
 	return TRUE;
 }
 
@@ -277,18 +296,26 @@ EXPORT char* CALLBACK GetInputBuffer() {
 	recv_buff = new char[BUFFER_LENGTH];
 	length = recv(s, (char*)recv_buff, BUFFER_LENGTH, 0);
 	if(SOCKET_ERROR == length) {
-		if(!is_win32s) {
-			sprintf(debug_str, "\r\n[WSAWrapper] Connection with %s closed / "
-				" Error code: %d", g_address, WSAGetLastError());
-			OutputDebugString(debug_str);
+		error_code = WSAGetLastError();
+		if(error_code >= 0) {			// workaround: check error code
+			if(!is_win32s) {
+				sprintf(debug_str, "\r\n[WSAWrapper] Connection with %s closed / "
+					" Error code: %d", g_address, error_code);
+				OutputDebugString(debug_str);
+			}
+			closesocket(s);
+			sprintf(recv_buff, "[WSAWrapper] 0xE0001\r\n");
+		} else {
+			stats.total_bytes_read += length;
+			stats.packets_read = stats.total_bytes_read / BUFFER_LENGTH;
+			recv_buff[length] = '\0';
 		}
-		closesocket(s);
-		sprintf(recv_buff, "[WSAWrapper] 0xE0001\r\n");
 	} else {
 		stats.total_bytes_read += length;
 		stats.packets_read = stats.total_bytes_read / BUFFER_LENGTH;
 		recv_buff[length] = '\0';
 	}
+	error_code = 0;
 	return recv_buff;
 }
 
@@ -298,6 +325,7 @@ EXPORT struct NetworkStatistics GetNetworkStatistics() {
 
 EXPORT void CloseConnection() {
 	try {
+		error_code = 0;
 		closesocket(s);
 		if(!is_win32s) {
 			sprintf(debug_str, "\r\n[WSAWrapper] Successfully closed!");
