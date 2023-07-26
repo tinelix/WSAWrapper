@@ -267,7 +267,7 @@ EXPORT BOOL CALLBACK SendData(char* buff) {
 		}
 		return FALSE;
 	} else {
-		stats.packets_sent = stats.packets_sent + 1;
+		stats.packets_sent = stats.total_bytes_sent / BUFFER_LENGTH;
 		stats.total_bytes_sent += strlen(buff);
 	}
 	return TRUE;
