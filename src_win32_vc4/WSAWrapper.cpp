@@ -297,14 +297,14 @@ EXPORT char* CALLBACK GetInputBuffer(SOCKET s) {
 	length = recv(s, (char*)recv_buff, BUFFER_LENGTH, 0);
 	if(SOCKET_ERROR == length) {
 		error_code = WSAGetLastError();
-		if(error_code == 10035) {			// workaround: check error code
+		if(error_code == 10035) {	// workaround: if it's non-blocking socket
 			if(!is_win32s) {
 				sprintf(debug_str, "\r\n[WSAWrapper] Buffer read error / "
 					" Error code: %d", g_address, error_code);
 				OutputDebugString(debug_str);
 			}
-			sprintf(recv_buff, "[No data]\r\n");
-			Sleep(50);
+			sprintf(recv_buff, "\r\n[Missing Socket Data]\r\n");
+			Sleep(200);
 		} else if(error_code > 0) {			// workaround: check error code
 			if(!is_win32s) {
 				sprintf(debug_str, "\r\n[WSAWrapper] Connection with %s closed / "
