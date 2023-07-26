@@ -303,7 +303,7 @@ EXPORT char* CALLBACK GetInputBuffer(SOCKET s) {
 					" Error code: %d", g_address, error_code);
 				OutputDebugString(debug_str);
 			}
-			sprintf(recv_buff, "\r\n[Missing Socket Data]\r\n");
+			sprintf(recv_buff, "\r\n[Missing Socket Data]");
 			Sleep(200);
 		} else if(error_code > 0) {			// workaround: check error code
 			if(!is_win32s) {
