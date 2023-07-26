@@ -270,7 +270,7 @@ EXPORT BOOL CALLBACK SendData(char* buff) {
 
 	if(SOCKET_ERROR == length) {
 		error_code = WSAGetLastError();
-		if(error_code >= 0) {				// workaround: check error code
+		if(error_code > 0) {				// workaround: check error code
 			if(!is_win32s) {
 				sprintf(debug_str, "\r\n[WSAWrapper] Sending failed / Error code: %d", error_code);
 				OutputDebugString(debug_str);
@@ -297,7 +297,7 @@ EXPORT char* CALLBACK GetInputBuffer() {
 	length = recv(s, (char*)recv_buff, BUFFER_LENGTH, 0);
 	if(SOCKET_ERROR == length) {
 		error_code = WSAGetLastError();
-		if(error_code >= 0) {			// workaround: check error code
+		if(error_code > 0) {			// workaround: check error code
 			if(!is_win32s) {
 				sprintf(debug_str, "\r\n[WSAWrapper] Connection with %s closed / "
 					" Error code: %d", g_address, error_code);
@@ -315,7 +315,6 @@ EXPORT char* CALLBACK GetInputBuffer() {
 		stats.packets_read = stats.total_bytes_read / BUFFER_LENGTH;
 		recv_buff[length] = '\0';
 	}
-	error_code = 0;
 	return recv_buff;
 }
 
