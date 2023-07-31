@@ -330,7 +330,7 @@ EXPORT struct NetworkStatistics GetNetworkStatistics() {
 	return stats;
 }
 
-EXPORT void CloseConnection() {
+EXPORT void CALLBACK CloseConnection() {
 	try {
 		error_code = 0;
 		closesocket(s);

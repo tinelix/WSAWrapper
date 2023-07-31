@@ -31,4 +31,4 @@ EXPORT int CALLBACK CreateAsyncConnection(char* address, int port, int part, int
 EXPORT BOOL CALLBACK SendData(char* buff);
 EXPORT char* CALLBACK GetInputBuffer(SOCKET s);
 EXPORT struct NetworkStatistics GetNetworkStatistics();
-EXPORT void CloseConnection();
+EXPORT void CALLBACK CloseConnection();
