@@ -237,6 +237,11 @@ EXPORT int CALLBACK CreateAsyncConnection(
 		addr.sin_family = AF_INET;
 		if(hostent) {
 			addr.sin_addr.S_un.S_addr = inet_addr((char*)inet_ntoa(**(in_addr**)hostent->h_addr_list));
+			if(!is_win32s) {
+				sprintf(debug_str, "\r\n[WSAWrapper] Redirecting: %s:%d -> %s:%d", g_address, g_port, 
+				(char*)inet_ntoa(**(in_addr**)hostent->h_addr_list), g_port);
+				OutputDebugString(debug_str);
+			}
 		} else {
 			if(!is_win32s) {
 				sprintf(debug_str, "\r\n[WSAWrapper] Connection failed / Error Code: %d", WSAGetLastError());
