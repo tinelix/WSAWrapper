@@ -22,6 +22,7 @@ struct NetworkStatistics {
 	int total_bytes_read;
 } NetworkStats;
 
+EXPORT void CALLBACK EnableDebugging(BOOL value);
 EXPORT BOOL CALLBACK InitializeWinSock();
 EXPORT BOOL CALLBACK EnableCustomAsyncMessages(HWND hWnd, int message, int nStatus);
 EXPORT BOOL CALLBACK EnableAsyncMessages(HWND hWnd);

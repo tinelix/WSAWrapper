@@ -2,12 +2,12 @@ LIBRARY					"WSAWrapper"
 DESCRIPTION				"Winsock Wrapper"
 
 EXPORTS
-EnableAsyncMessages		@15
-GetWSAError				@16
-CreateConnection		@17
-CreateAsyncConnection	@18
-SendData				@19
-GetInputBuffer			@20
-GetNetworkStatistics	@21
-CloseConnection			@22
-
+EnableDebugging         @14
+EnableAsyncMessages     @15
+GetWSAError             @16
+CreateConnection        @17
+CreateAsyncConnection   @18
+SendData                @19
+GetInputBuffer          @20
+GetNetworkStatistics    @21
+CloseConnection         @22
