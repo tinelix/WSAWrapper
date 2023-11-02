@@ -84,14 +84,14 @@ EXPORT void CALLBACK EnableDebugging(BOOL value) {
 EXPORT BOOL CALLBACK InitializeWinSock() {
 	WSADATA wsadata;
 	if(FAILED(WSAStartup(MAKEWORD(1,1), &wsadata))) {
-		if(!is_win32s && debug) {
+		if(!is_win32s) {
 			sprintf(debug_str, "\r\n[WSAWrapper] Winsock initialization "
 				"failed / Error Code: %d", WSAGetLastError());
 			OutputDebugString(debug_str);
 		}
 		return FALSE;
 	}
-	if(!is_win32s && debug) {
+	if(!is_win32s) {
 		sprintf(debug_str, "\r\n[WSAWrapper] Winsock 1.1+ initialized.");
 		OutputDebugString(debug_str);
 	}
@@ -354,6 +354,11 @@ EXPORT char* CALLBACK GetInputBuffer(SOCKET s) {
 		stats.total_bytes_read += length;
 		stats.packets_read = stats.total_bytes_read / BUFFER_LENGTH;
 		recv_buff[length] = '\0';
+		if(!is_win32s && debug) {
+			sprintf(debug_str, "\r\n[WSAWrapper] Receiving Data from %s... (%d bytes)", 
+					g_address, length);
+			OutputDebugString(debug_str);
+		}
 	}
 	return recv_buff;
 }
