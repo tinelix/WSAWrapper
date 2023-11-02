@@ -69,7 +69,16 @@ int WINAPI DllMain(HINSTANCE hInst, DWORD fdReas, PVOID pvRes) {
 }
 
 EXPORT void CALLBACK EnableDebugging(BOOL value) {
-	debug = value;
+	if(!is_win32s) {
+		debug = value;
+		if(debug == TRUE) {
+			sprintf(debug_str, "\r\n[WSAWrapper] Debug Enabled");
+				OutputDebugString(debug_str);
+		}
+	} else {
+		MessageBox(NULL, "Direct DLL debugging is not possible in the current Windows version.", 
+			"WSAWrapper", MB_ICONSTOP|MB_OK);
+	}
 }
 
 EXPORT BOOL CALLBACK InitializeWinSock() {
