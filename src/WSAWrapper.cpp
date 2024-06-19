@@ -160,6 +160,7 @@ EXPORT BOOL CALLBACK CreateConnection(char* address, int port) {
 	g_address = address;
 	if(INVALID_SOCKET == (s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP))) {
 		error_code = WSAGetLastError();
+		
 		Win32OutputLog("\r\n[WSAWrapper] Socket initialization failed / Error Code: %d", error_code);
 		return FALSE;
 	}
@@ -172,6 +173,7 @@ EXPORT BOOL CALLBACK CreateConnection(char* address, int port) {
 	if(hostent) {
 		addr.sin_addr.S_un.S_addr = 
 			inet_addr((char*)inet_ntoa(**(in_addr**)hostent->h_addr_list));
+
 		Win32OutputLog("\r\n[WSAWrapper] IP Address Found: %s:%d -> %s:%d", address, port,
 			(char*)inet_ntoa(**(in_addr**)hostent->h_addr_list), port);
 	} else {
@@ -180,12 +182,16 @@ EXPORT BOOL CALLBACK CreateConnection(char* address, int port) {
 		return FALSE;
 	}
 	addr.sin_port = htons(port);
+
 	Win32OutputLog("\r\n[WSAWrapper] Connecting to %s:%d...", address, port);
+
 	if(SOCKET_ERROR == (connect(s, (sockaddr*)&addr, sizeof(addr)))) {
 		error_code = WSAGetLastError();
+		
 		Win32OutputLog("\r\n[WSAWrapper] Connection failed / Error Code: %d", error_code);
 		return FALSE;
 	}
+	
 	Win32OutputLog("\r\n[WSAWrapper] Successfully connected!");
 	error_code = 0;
 	return TRUE;
@@ -205,7 +211,9 @@ EXPORT int CALLBACK CreateAsyncConnection(
 			return 0;
 		}
 		ZeroMemory(&addr, sizeof(addr));
+		
 		Win32OutputLog("\r\n[WSAWrapper] Searching IP Address of %s:%d...", address, port);
+
 		WSAAsyncGetHostByName(hWnd, message, g_address, hostent_char, sizeof(hostent_char));
 		return 2;
 	} else {
@@ -213,6 +221,7 @@ EXPORT int CALLBACK CreateAsyncConnection(
 		addr.sin_family = AF_INET;
 		if(hostent) {
 			addr.sin_addr.S_un.S_addr = inet_addr((char*)inet_ntoa(**(in_addr**)hostent->h_addr_list));
+			
 			Win32OutputLog("\r\n[WSAWrapper] Redirecting: %s:%d -> %s:%d", g_address, g_port,
 				(char*)inet_ntoa(**(in_addr**)hostent->h_addr_list), g_port);
 		} else {
@@ -220,12 +229,15 @@ EXPORT int CALLBACK CreateAsyncConnection(
 			return 0;
 		}
 		addr.sin_port = htons(g_port);
+		
 		Win32OutputLog("\r\n[WSAWrapper] Connecting to %s:%d...", g_address, g_port);
+		
 		if(SOCKET_ERROR == (connect(s, (sockaddr*)&addr, sizeof(addr)))) {
 			error_code = WSAGetLastError();
 			Win32OutputLog("\r\n[WSAWrapper] Connection failed / Error Code: %d", error_code);
 			return 0;
 		}
+		
 		Win32OutputLog("\r\n[WSAWrapper] Successfully connected!");
 		return 1;
 	}
@@ -264,22 +276,28 @@ EXPORT char* CALLBACK GetInputBuffer(SOCKET s) {
 	if(SOCKET_ERROR == length) {
 		error_code = WSAGetLastError();
 		if(error_code == 10035) {	// workaround: if it's non-blocking socket
+
 			Win32OutputLog("\r\n[WSAWrapper] Buffer Read error / "
 				" Error Code: %d", g_address, error_code);
+
 			#ifdef _MSVC2005G
 				sprintf_s(recv_buff, 200, "\r\n[Missing Socket Data]");
 			#else
 				sprintf(recv_buff, "\r\n[Missing Socket Data]");
 			#endif
+
 			Sleep(200);
 		} else if(error_code > 0) {			// workaround: check error code
+
 			Win32OutputLog("\r\n[WSAWrapper] Connection with %s closed / "
 				" Error Code: %d", g_address, error_code);
+
 			closesocket(s);
 		} else {
 			stats.total_bytes_read += length;
 			stats.packets_read = stats.total_bytes_read / BUFFER_LENGTH;
 			recv_buff[length] = '\0';
+
 			Win32OutputLog("\r\n[WSAWrapper] Receiving Data from %s... (%d bytes)",
 				g_address, length);
 		}
@@ -287,6 +305,7 @@ EXPORT char* CALLBACK GetInputBuffer(SOCKET s) {
 		stats.total_bytes_read += length;
 		stats.packets_read = stats.total_bytes_read / BUFFER_LENGTH;
 		recv_buff[length] = '\0';
+
 		Win32OutputLog("\r\n[WSAWrapper] Receiving Data from %s... (%d bytes)",
 			g_address, length);
 	}
@@ -301,6 +320,7 @@ EXPORT void CALLBACK CloseConnection() {
 	try {
 		error_code = 0;
 		closesocket(s);
+
 		Win32OutputLog("\r\n[WSAWrapper] Successfully closed!");
 	} catch(...) {
 
