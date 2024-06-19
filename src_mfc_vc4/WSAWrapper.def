@@ -1,6 +1,0 @@
-; WSAWrapper.def : Declares the module parameters for the DLL.
-
-LIBRARY      "WSAWRAPPER"
-DESCRIPTION  'WSAWRAPPER Windows Dynamic Link Library'
-
-EXPORTS
