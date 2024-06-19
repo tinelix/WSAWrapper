@@ -8,3 +8,4 @@
 *.pch
 Debug/WSAWrapper.obj
 Debug/vc40.idb
+src/WSAWrapper.vcxproj.user
