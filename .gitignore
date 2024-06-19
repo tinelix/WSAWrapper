@@ -9,3 +9,5 @@
 Debug/WSAWrapper.obj
 Debug/vc40.idb
 src/WSAWrapper.vcxproj.user
+src/.vs/WSAWrapper/v16
+src/x64/Debug
