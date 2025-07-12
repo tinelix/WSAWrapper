@@ -34,9 +34,9 @@ NULL=nul
 ################################################################################
 # Begin Project
 # PROP Target_Last_Scanned "WSAWrapper - Win32 Debug"
+RSC=rc.exe
 MTL=mktyplib.exe
 CPP=cl.exe
-RSC=rc.exe
 
 !IF  "$(CFG)" == "WSAWrapper - Win32 Release"
 
@@ -47,34 +47,39 @@ RSC=rc.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "Release"
-# PROP Intermediate_Dir "Release"
+# PROP Output_Dir "out/obj"
+# PROP Intermediate_Dir "out/interm"
 # PROP Target_Dir ""
-OUTDIR=.\Release
-INTDIR=.\Release
+OUTDIR=.\out/obj
+INTDIR=.\out/interm
 
 ALL : "$(OUTDIR)\wsawrap.dll"
 
 CLEAN : 
-	-@erase ".\Release\wsawrap.dll"
-	-@erase ".\Release\WSAWrapper.obj"
-	-@erase ".\Release\wsawrap.lib"
-	-@erase ".\Release\wsawrap.exp"
+	-@erase ".\out\bin\wsawrap.dll"
+	-@erase ".\out\interm\wsawrap.obj"
+	-@erase ".\out\interm\wsawrap.res"
+	-@erase ".\out\obj\wsawrap.lib"
+	-@erase ".\out\obj\wsawrap.exp"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+
+"$(INTDIR)" :
+    if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /c
 # ADD CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /c
 CPP_PROJ=/nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS"\
  /Fp"$(INTDIR)/WSAWrapper.pch" /YX /Fo"$(INTDIR)/" /c 
-CPP_OBJS=.\Release/
+CPP_OBJS=.\out/interm/
 CPP_SBRS=
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /win32
 MTL_PROJ=/nologo /D "NDEBUG" /win32 
 # ADD BASE RSC /l 0x419 /d "NDEBUG"
 # ADD RSC /l 0x419 /d "NDEBUG"
+RSC_PROJ=/l 0x419 /fo"$(INTDIR)/wsawrap.res" /d "NDEBUG" 
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -82,16 +87,17 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)/WSAWrapper.bsc"
 BSC32_SBRS=
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /machine:I386 /out:"Release/wsawrap.dll"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /machine:I386 /out:"out/bin/wsawrap.dll"
 LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
  advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib\
  odbccp32.lib /nologo /subsystem:windows /dll /incremental:no\
- /pdb:"$(OUTDIR)/wsawrap.pdb" /machine:I386 /def:".\WSAWrapper.def"\
- /out:"$(OUTDIR)/wsawrap.dll" /implib:"$(OUTDIR)/wsawrap.lib" 
+ /pdb:"$(OUTDIR)/wsawrap.pdb" /machine:I386 /def:".\src\wsawrap.def"\
+ /out:"out/bin/wsawrap.dll" /implib:"$(OUTDIR)/wsawrap.lib" 
 DEF_FILE= \
-	".\WSAWrapper.def"
+	".\src\wsawrap.def"
 LINK32_OBJS= \
-	"$(INTDIR)/WSAWrapper.obj"
+	".\out\interm\wsawrap.obj" \
+	".\out\interm\wsawrap.res"
 
 "$(OUTDIR)\wsawrap.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -107,38 +113,43 @@ LINK32_OBJS= \
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "Debug"
-# PROP Intermediate_Dir "Debug"
+# PROP Output_Dir "out/obj"
+# PROP Intermediate_Dir "out/interm"
 # PROP Target_Dir ""
-OUTDIR=.\Debug
-INTDIR=.\Debug
+OUTDIR=.\out/obj
+INTDIR=.\out/interm
 
 ALL : "$(OUTDIR)\wsawrap.dll"
 
 CLEAN : 
-	-@erase ".\Debug\vc40.pdb"
-	-@erase ".\Debug\vc40.idb"
-	-@erase ".\Debug\wsawrap.dll"
-	-@erase ".\Debug\WSAWrapper.obj"
-	-@erase ".\Debug\wsawrap.ilk"
-	-@erase ".\Debug\wsawrap.lib"
-	-@erase ".\Debug\wsawrap.exp"
-	-@erase ".\Debug\wsawrap.pdb"
+	-@erase ".\out\bin\wsawrap.dll"
+	-@erase ".\out\interm\wsawrap.obj"
+	-@erase ".\out\interm\wsawrap.res"
+	-@erase ".\out\bin\wsawrap.ilk"
+	-@erase ".\out\obj\wsawrap.lib"
+	-@erase ".\out\obj\wsawrap.exp"
+	-@erase ".\out\obj\wsawrap.pdb"
+	-@erase ".\out\interm\vc40.pdb"
+	-@erase ".\out\interm\vc40.idb"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+
+"$(INTDIR)" :
+    if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
 # ADD CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
 CPP_PROJ=/nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS"\
  /Fp"$(INTDIR)/WSAWrapper.pch" /YX /Fo"$(INTDIR)/" /Fd"$(INTDIR)/" /c 
-CPP_OBJS=.\Debug/
+CPP_OBJS=.\out/interm/
 CPP_SBRS=
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /win32
 MTL_PROJ=/nologo /D "_DEBUG" /win32 
 # ADD BASE RSC /l 0x419 /d "_DEBUG"
 # ADD RSC /l 0x419 /d "_DEBUG"
+RSC_PROJ=/l 0x419 /fo"$(INTDIR)/wsawrap.res" /d "_DEBUG" 
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -146,16 +157,17 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)/WSAWrapper.bsc"
 BSC32_SBRS=
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:I386 /out:"Debug/wsawrap.dll"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:I386 /out:"out/bin/wsawrap.dll"
 LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
  advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib\
  odbccp32.lib /nologo /subsystem:windows /dll /incremental:yes\
- /pdb:"$(OUTDIR)/wsawrap.pdb" /debug /machine:I386 /def:".\WSAWrapper.def"\
- /out:"$(OUTDIR)/wsawrap.dll" /implib:"$(OUTDIR)/wsawrap.lib" 
+ /pdb:"$(OUTDIR)/wsawrap.pdb" /debug /machine:I386 /def:".\src\wsawrap.def"\
+ /out:"out/bin/wsawrap.dll" /implib:"$(OUTDIR)/wsawrap.lib" 
 DEF_FILE= \
-	".\WSAWrapper.def"
+	".\src\wsawrap.def"
 LINK32_OBJS= \
-	"$(INTDIR)/WSAWrapper.obj"
+	".\out\interm\wsawrap.obj" \
+	".\out\interm\wsawrap.res"
 
 "$(OUTDIR)\wsawrap.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -197,40 +209,33 @@ LINK32_OBJS= \
 ################################################################################
 # Begin Source File
 
-SOURCE=.\WSAWrapper.h
+SOURCE=.\src\wsawrap.cpp
+DEP_CPP_WSAWR=\
+	".\include\wsawrap.h"\
+	
 
-!IF  "$(CFG)" == "WSAWrapper - Win32 Release"
+"$(INTDIR)\wsawrap.obj" : $(SOURCE) $(DEP_CPP_WSAWR) "$(INTDIR)"
+   $(CPP) $(CPP_PROJ) $(SOURCE)
 
-!ELSEIF  "$(CFG)" == "WSAWrapper - Win32 Debug"
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
-SOURCE=.\WSAWrapper.cpp
+SOURCE=.\res\wsawrap.rc
 
 !IF  "$(CFG)" == "WSAWrapper - Win32 Release"
 
-DEP_CPP_WSAWR=\
-	".\WSAWrapper.h"\
-	
-NODEP_CPP_WSAWR=\
-	".\stats.packets_read"\
-	".\total_bytes_read"\
-	
 
-"$(INTDIR)\WSAWrapper.obj" : $(SOURCE) $(DEP_CPP_WSAWR) "$(INTDIR)"
+"$(INTDIR)\wsawrap.res" : $(SOURCE) "$(INTDIR)"
+   $(RSC) /l 0x419 /fo"$(INTDIR)/wsawrap.res" /i "res" /d "NDEBUG" $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "WSAWrapper - Win32 Debug"
 
-DEP_CPP_WSAWR=\
-	".\WSAWrapper.h"\
-	
 
-"$(INTDIR)\WSAWrapper.obj" : $(SOURCE) $(DEP_CPP_WSAWR) "$(INTDIR)"
+"$(INTDIR)\wsawrap.res" : $(SOURCE) "$(INTDIR)"
+   $(RSC) /l 0x419 /fo"$(INTDIR)/wsawrap.res" /i "res" /d "_DEBUG" $(SOURCE)
 
 
 !ENDIF 
@@ -239,7 +244,7 @@ DEP_CPP_WSAWR=\
 ################################################################################
 # Begin Source File
 
-SOURCE=.\WSAWrapper.def
+SOURCE=.\src\wsawrap.def
 
 !IF  "$(CFG)" == "WSAWrapper - Win32 Release"
 

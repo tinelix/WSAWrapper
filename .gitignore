@@ -1,10 +1,8 @@
-/src_win32_vc4/Debug
-/src_mfc_vc4/Debug
+/out
 *.dll
 *.exp
 *.ilk
 *.lib
 *.pdb
 *.pch
-Debug/WSAWrapper.obj
-Debug/vc40.idb
+*.obj

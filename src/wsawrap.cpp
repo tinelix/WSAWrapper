@@ -1,4 +1,4 @@
-//  Copyright © 2023 Dmitry Tretyakov (aka. Tinelix)
+//  Copyright © 2023, 2025 Dmitry Tretyakov (aka. Tinelix)
 //
 //  This program is free software: you can redistribute it and/or modify it under the terms of
 //  the GNU Lesser General Public License as published by the Free Software Foundation, either
@@ -16,7 +16,7 @@
 #include <windows.h>
 #include <winsock.h>
 #include <stdio.h>
-#include "WSAWrapper.h"
+#include "../include/wsawrap.h"
 
 #pragma comment(lib, "wsock32.lib");
 
@@ -320,8 +320,11 @@ EXPORT BOOL CALLBACK SendData(char* buff) {
 
 EXPORT char* CALLBACK GetInputBuffer(SOCKET s) {
 	int length = 0;
-	recv_buff = new char[BUFFER_LENGTH];
+	if(recv_buff == NULL)
+		recv_buff = (char*)malloc(BUFFER_LENGTH * sizeof(char));
+
 	length = recv(s, (char*)recv_buff, BUFFER_LENGTH, 0);
+
 	if(SOCKET_ERROR == length) {
 		error_code = WSAGetLastError();
 		if(error_code == 10035) {	// workaround: if it's non-blocking socket
@@ -374,6 +377,11 @@ EXPORT void CALLBACK CloseConnection() {
 		if(!is_win32s && debug) {
 			sprintf(debug_str, "\r\n[WSAWrapper] Successfully closed!");
 			OutputDebugString(debug_str);
+		}
+
+		if(recv_buff != NULL) {
+			free(recv_buff);
+			recv_buff = NULL;
 		}
 	} catch(...) {
 
