@@ -16,7 +16,7 @@
 #include <windows.h>
 #include <winsock.h>
 #include <stdio.h>
-#include "../include/wsawrap.h"
+#include <wsawrap.h>
 
 #pragma comment(lib, "wsock32.lib");
 
